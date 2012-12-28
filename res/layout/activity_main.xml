@@ -1,36 +1,102 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<TextView 
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/longitude_label"
-    />
-<TextView  android:id="@+id/longitude"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text=""
-    />
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/latitude_label"
-    />
-<TextView  android:id="@+id/latitude"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text=""
-    />
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/addressprint_label"
-    />
-<TextView  android:id="@+id/addressprint"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text=""
-    />
-</LinearLayout>
+    android:layout_height="fill_parent" >
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/selection_type"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/oil_type" />
+
+            <Spinner
+                android:id="@+id/spinner_type"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/selection_city"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/oil_city" />
+
+            <Spinner
+                android:id="@+id/spinner_city"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="時間:" />
+
+            <RadioGroup
+                android:id="@+id/orientation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5dip" >
+
+                <RadioButton
+                    android:id="@+id/time_normal"
+                    android:layout_width="wrap_content"
+                    android:checked="true"
+                    android:text="一般" />
+
+                <RadioButton
+                    android:id="@+id/time_24HR"
+                    android:text="24小時" />
+            </RadioGroup>
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/product1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="自助加油:" />
+
+            <RadioGroup
+                android:id="@+id/self"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5dip" >
+
+                <RadioButton
+                    android:id="@+id/self_yes"
+                    android:checked="true"
+                    android:text="有" />
+
+                <RadioButton
+                    android:id="@+id/self_no"
+                    android:text="沒有" />
+            </RadioGroup>
+        </TableRow>
+
+
+    </TableLayout>
+        <Button
+            android:id="@+id/map"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="showMe"
+            android:text="Search" 
+            android:layout_alignParentBottom="true"/>
+</RelativeLayout>

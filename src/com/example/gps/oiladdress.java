@@ -73,10 +73,6 @@ public class oiladdress extends ListActivity {
 
 	  @Override
 	  protected void onListItemClick(ListView l, View v, int position, long id) {
-		  //Toast.makeText(getApplicationContext(),
-			//		((TextView) v).getText(), Toast.LENGTH_SHORT).show();
-		  //Toast.makeText(getApplicationContext(),
-		//		  array_phone[(int)id], Toast.LENGTH_SHORT).show();
 		  Toast.makeText(this, array_phone[(int)id], Toast.LENGTH_LONG).show();
 	  }
 } 
