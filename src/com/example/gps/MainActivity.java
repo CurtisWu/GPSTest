@@ -331,7 +331,7 @@ public class MainActivity extends Activity {//implements AdapterView.OnItemSelec
             for (Element index : addressInfo) {
            	 //Log.d("Smallhau", index.text());
            	 	Elements els = index.select("td");
-           	 	Log.d("Smallhau", els.get(0).text()+els.get(1).text()+els.get(3).text());
+           	 	//Log.d("Smallhau", els.get(0).text()+els.get(1).text()+els.get(3).text());
            	 	address_list[count] = els.get(0).text()+els.get(1).text()+els.get(3).text();
            	 	phone_list[count] = els.get(2).text()+"\n"+els.get(4).text();
            	 	count++;

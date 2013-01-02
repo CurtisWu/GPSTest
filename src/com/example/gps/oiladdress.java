@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -58,11 +59,12 @@ public class oiladdress extends Activity {
 
 public class oiladdress extends ListActivity {
 	  String[] array_phone = null;
+	  String[] array_address = null;
 	  public void onCreate(Bundle icicle) {
 	    super.onCreate(icicle);
 	    //setContentView(R.layout.oiladdress);
 	    Intent i = getIntent();
-		String[] array_address = i.getStringArrayExtra("com.example.gps.ADDRESS");
+		array_address = i.getStringArrayExtra("com.example.gps.ADDRESS");
 		array_phone = i.getStringArrayExtra("com.example.gps.PHONE");
 	    // Use your own layout
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.oiladdress, array_address));
@@ -73,6 +75,10 @@ public class oiladdress extends ListActivity {
 
 	  @Override
 	  protected void onListItemClick(ListView l, View v, int position, long id) {
-		  Toast.makeText(this, array_phone[(int)id], Toast.LENGTH_LONG).show();
+		  //intent.putExtra("com.example.gps.ADDRESSForSearch", [(int)id]);
+		  Intent intent = new Intent(oiladdress.this, SearchByAddress.class);
+		  intent.putExtra("com.example.gps.ADDRESSForSearch", array_address[(int)id]);
+		  startActivity(intent);
+		  //Toast.makeText(this, array_phone[(int)id], Toast.LENGTH_LONG).show();
 	  }
 } 
