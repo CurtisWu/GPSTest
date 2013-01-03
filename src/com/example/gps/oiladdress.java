@@ -77,7 +77,11 @@ public class oiladdress extends ListActivity {
 	  protected void onListItemClick(ListView l, View v, int position, long id) {
 		  //intent.putExtra("com.example.gps.ADDRESSForSearch", [(int)id]);
 		  Intent intent = new Intent(oiladdress.this, SearchByAddress.class);
-		  intent.putExtra("com.example.gps.ADDRESSForSearch", array_address[(int)id]);
+		  intent.putExtra("com.example.gps.ADDRESSForSearch", array_address[position]);
+		  intent.putExtra("com.example.gps.ADDRESSOption", position);
+
+		  if (position == 0)
+			  intent.putExtra("com.example.gps.ADDRESSListForSearch", array_address);
 		  startActivity(intent);
 		  //Toast.makeText(this, array_phone[(int)id], Toast.LENGTH_LONG).show();
 	  }

@@ -326,8 +326,11 @@ public class MainActivity extends Activity {//implements AdapterView.OnItemSelec
             Document doc = Jsoup.parse(in, "big5", "");
             Elements addressInfo = doc.select("tr[bgcolor=#E1E4F4]");
             //Elements addressInfo1 = doc.select("td[width=6%]"); //td valign="top" width="6%" align="left"
-            address_list = new String[addressInfo.size()];
-            phone_list = new String[addressInfo.size()];
+            address_list = new String[addressInfo.size() + 1];
+            phone_list = new String[addressInfo.size() + 1];
+            
+            address_list[0] = "在地圖顯示附近的點";
+            count++;
             for (Element index : addressInfo) {
            	 //Log.d("Smallhau", index.text());
            	 	Elements els = index.select("td");
