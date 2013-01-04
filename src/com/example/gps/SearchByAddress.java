@@ -31,6 +31,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -60,8 +61,8 @@ public class SearchByAddress extends MapActivity
 	
 	private GeoPoint fromGeoPoint, toGeoPoint;
 	private GeoPoint [] toGeoPoint_array = null; 
-	private GeoPoint [] nearGeoPoint_array = null;
-	
+	public GeoPoint [] nearGeoPoint_array = null;
+	public double [] distance = null;
 
 	
 	@Override
@@ -82,7 +83,8 @@ public class SearchByAddress extends MapActivity
 		mMapView01 = (MapView)findViewById(R.id.gmap);
 		mMapController01 = mMapView01.getController();
 		// 設定 MapView的顯示選項（衛星、街道）
-		mMapView01.setSatellite(true);
+		mMapView01.setSatellite(false);
+		mMapView01.setTraffic(true);
 		mMapView01.setBuiltInZoomControls(true);  // MapView預設縮放控制列
 		mMapView01.displayZoomControls(true); 
 		
@@ -364,12 +366,15 @@ public class SearchByAddress extends MapActivity
 		String dst_address = null;
 		String [] neibor_address = null;
 		int defvalue, option;
+		//double [] distance = new double[neibor_address.length-1];
+		//GeoPoint [] nearGeoPoint_array = new GeoPoint[30];
+		int neighbor_count = 0;
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			
 			Intent i = getIntent();
 			option = i.getIntExtra("com.example.gps.ADDRESSOption", defvalue);
-
+			mMapController01.setZoom(15);
 			if (option == 0)
 			{
 				neibor_address = i.getStringArrayExtra("com.example.gps.ADDRESSListForSearch");
@@ -390,6 +395,7 @@ public class SearchByAddress extends MapActivity
 			}
 			else
 			{
+				/*
 				toGeoPoint_array = new GeoPoint[neibor_address.length-1];
 				double [] distance = new double[neibor_address.length-1];
 
@@ -421,11 +427,24 @@ public class SearchByAddress extends MapActivity
 				nearGeoPoint_array = new GeoPoint[5];
 				for (int ind = 0; ind < 5; ind++)
 					nearGeoPoint_array[ind] = getGeoByAddress(list_Data.get(ind).getKey());
-				
+				*/
+				toGeoPoint_array = new GeoPoint[neibor_address.length-1];
+				distance = new double[neibor_address.length-1];
+				double fromgeoLatitude = (int)fromGeoPoint.getLatitudeE6()/1E6;
+				double fromgeoLongitude = (int)fromGeoPoint.getLongitudeE6()/1E6;
+
+				for (int index = 0; index < neibor_address.length-1; index++)
+				{
+					toGeoPoint_array[index] = getGeoByAddress(neibor_address[index+1]);
+					double togeoLatitude = (int)toGeoPoint_array[index].getLatitudeE6()/1E6;
+					double togeoLongitude = (int)toGeoPoint_array[index].getLongitudeE6()/1E6;
+					distance[index] = gps2m(togeoLatitude, togeoLongitude ,fromgeoLatitude, fromgeoLongitude);
+				}
 			}
 			return null;
 		}
-
+		
+		
 		@Override
 		protected void onPostExecute(Void result) {
 			Intent intent = new Intent();
@@ -445,24 +464,49 @@ public class SearchByAddress extends MapActivity
 			}
 			else
 			{
+				//mMapController01.setZoom(15);
 				MyLocationOverlay m_MyLocationOverlay;
 				m_MyLocationOverlay = new MyLocationOverlay(SearchByAddress.this, mMapView01); 
 				mMapView01.getOverlays().add(m_MyLocationOverlay);
 				 MyOverlay myOverlay = new MyOverlay(getResources().getDrawable(R.drawable.ic_gas));
 			     //try {
 			     	List<Overlay> overlays = mMapView01.getOverlays();
+			     	/*
 			     	for(int ax=0;ax<5;ax++){
 			     		OverlayItem ovi = new OverlayItem(nearGeoPoint_array[ax], "oil", "station");
 			     		myOverlay.addOverley(ovi);
 			     	}
-			     	overlays.add(myOverlay);
-			     	myOverlay = new MyOverlay(getResources().getDrawable(R.drawable.ic_ironman));
+			     	*/
+
+			     	nearGeoPoint_array = new GeoPoint[30];
+			     	for(int ax=0;ax<neibor_address.length-1;ax++){
+			     		if (distance[ax] < 10 * 1000)
+			     		{
+				     		OverlayItem ovi = new OverlayItem(toGeoPoint_array[ax], "oil", "station");
+				     		myOverlay.addOverley(ovi);
+				     		nearGeoPoint_array[neighbor_count] = toGeoPoint_array[ax];
+				     		neighbor_count++;
+			     		}
+			     	}
+			     	
+			     	if (neighbor_count != 0)
+			     	{
+			     		overlays.add(myOverlay);
+			     	}
+			     	else
+			     	{
+			     		Toast.makeText(SearchByAddress.this, "該縣市之加油站皆距離很遠!!!", Toast.LENGTH_LONG).show();
+			     	}
+			     	
+			     	MyOverlay2 myOverlay2 = new MyOverlay2(getResources().getDrawable(R.drawable.ic_ironman));
 			     	OverlayItem ovi = new OverlayItem(fromGeoPoint, "Man", "Man");
-		     		myOverlay.addOverley(ovi);
-			     	overlays.add(myOverlay);
-			     	mMapController01.setZoom(15);
+		     		myOverlay2.addOverley(ovi);
+			     	overlays.add(myOverlay2);
+			     	//mMapController01.setZoom(15);
 			}
 			startActivity(intent);
+			if (option != 0)
+				SearchByAddress.this.finish();
 		}
 		
 		class MyOverlay extends ItemizedOverlay{
@@ -489,7 +533,8 @@ public class SearchByAddress extends MapActivity
 		 	}
 		 	
 		 	protected boolean onTap(int index){
-		 		if (index != 5)
+
+		 		if (index != neighbor_count)
 		 		{
 			 		Intent intent = new Intent();
 					intent.setAction(android.content.Intent.ACTION_VIEW);
@@ -505,6 +550,31 @@ public class SearchByAddress extends MapActivity
 		 		}
 		 		return true;
 		 	}
+		 }
+		
+		class MyOverlay2 extends ItemizedOverlay{
+		 	public int type;
+		 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
+		 	public MyOverlay2(Drawable defaultMarker) {
+		 		super(boundCenterBottom(defaultMarker));
+		 	}
+		 	@Override
+		 	public void draw(Canvas canvas, MapView mapView,boolean shadow){
+		 		super.draw(canvas, mapView, shadow);
+		 	}
+		 	@Override
+		 	protected OverlayItem createItem(int i) {
+		 		return mOverlays.get(i);
+		 	}
+		 	@Override
+		 	public int size() {
+		 		return mOverlays.size();
+		 	}
+		 	public void addOverley(OverlayItem overley){
+		 		mOverlays.add(overley);
+		 		populate();
+		 	}
+		 	
 		 }
 	}
 }
