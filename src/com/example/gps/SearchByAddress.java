@@ -83,6 +83,8 @@ public class SearchByAddress extends MapActivity
 		mMapController01 = mMapView01.getController();
 		// 設定 MapView的顯示選項（衛星、街道）
 		mMapView01.setSatellite(true);
+		mMapView01.setBuiltInZoomControls(true);  // MapView預設縮放控制列
+		mMapView01.displayZoomControls(true); 
 		
 		// 放大的層級 intZoomLevel = 15;
 		mMapController01.setZoom(15);
@@ -237,7 +239,7 @@ public class SearchByAddress extends MapActivity
 			{
 				Geocoder mGeocoder01 = new Geocoder
 				(SearchByAddress.this, Locale.TAIWAN);
-				//Log.d("smallhau", Geocoder.isPresent()+"!!!!!!!!!!!");
+
 				List<Address> lstAddress = mGeocoder01.getFromLocationName
 				(strSearchAddress, 1);
 
@@ -265,6 +267,7 @@ public class SearchByAddress extends MapActivity
 			mapview.displayZoomControls(true);
 			MapController myMC = mapview.getController();
 			myMC.animateTo(gp);
+			myMC.setCenter(gp);
 			myMC.setZoom(zoomLevel);
 			mapview.setSatellite(false);
 		}
@@ -452,8 +455,10 @@ public class SearchByAddress extends MapActivity
 			     		OverlayItem ovi = new OverlayItem(nearGeoPoint_array[ax], "oil", "station");
 			     		myOverlay.addOverley(ovi);
 			     	}
-			     	//OverlayItem ovi = new OverlayItem(fromGeoPoint, "Man", "Man");
-		     		//myOverlay.addOverley(ovi);
+			     	overlays.add(myOverlay);
+			     	myOverlay = new MyOverlay(getResources().getDrawable(R.drawable.ic_ironman));
+			     	OverlayItem ovi = new OverlayItem(fromGeoPoint, "Man", "Man");
+		     		myOverlay.addOverley(ovi);
 			     	overlays.add(myOverlay);
 			     	mMapController01.setZoom(15);
 			}
